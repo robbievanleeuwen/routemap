@@ -1,29 +1,29 @@
 {
 	"name": "hartley",
 	"top_left": {
-		"x_px": 0,
-		"y_px": 0,
+		"x_px": 607,
+		"y_px": 185,
 		"latitude": -33.5,
 		"longitude": 150.0
 	},
 	"top_right": {
-		"x_px": 0,
-		"y_px": 0,
+		"x_px": 11585,
+		"y_px": 185,
 		"latitude": -33.5,
 		"longitude": 150.25
 	},
 	"bottom_right": {
-		"x_px": 0,
-		"y_px": 0,
+		"x_px": 11577,
+		"y_px": 6734,
 		"latitude": -33.625,
 		"longitude": 150.25
 	},
 	"bottom_left": {
-		"x_px": 0,
-		"y_px": 0,
+		"x_px": 615,
+		"y_px": 6734,
 		"latitude": -33.625,
 		"longitude": 150.0
 	},
 	"tile_position": [-1, 1],
-	"alignment": [0, 0]
+	"alignment": 0
 }

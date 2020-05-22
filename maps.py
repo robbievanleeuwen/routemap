@@ -1,4 +1,6 @@
 import json
+import numpy as np
+from itertools import compress
 from PIL import Image
 
 
@@ -18,19 +20,45 @@ class Region:
             new_map_tile = MapTile(map_image_path=map_image_path, map_data_path=map_data_paths[i])
             self.map_tiles.append(new_map_tile)
 
+
+    def generate_region_map(self, route):
+        (used_tiles, extents) = self.route_within_tiles(route=route)
+        map_list = list(compress(self.map_tiles, used_tiles))
+        map_grid = np.empty(shape=(extents[3] - extents[1] + 1, extents[2] - extents[0] + 1), dtype=object)
+
+        # populate map_grid
+        for map_tile in map_list:
+            # calculate array index
+            idx = np.array([map_tile.tile_position[0] - extents[0], extents[3] - map_tile.tile_position[1]])
+            print(idx)
+            map_grid[idx] = map_tile
+            print(map_grid)
+
+        print(map_grid)
+
+
     def route_within_tiles(self, route):
-        """Checks to see which tiles are required to display the route."""
+        """Checks to see which tiles are required to display the route and returns the tile extents of the combined
+        map.
+        """
 
         route_bounding_box = route.bounding_box
         used_tiles = []
+        extents = [999, 999, -999, -999] # tile extents [xmin, ymin, xmax, ymax]
 
         for map_tile in self.map_tiles:
-            used_tiles.append(map_tile.within_bounding_box(bounding_box=route_bounding_box))
+            is_used = map_tile.within_bounding_box(bounding_box=route_bounding_box)
+            used_tiles.append(is_used)
 
-        return used_tiles
+            if is_used:
+                pos = map_tile.tile_position
+                extents[0] = min(extents[0], pos[0])
+                extents[1] = min(extents[1], pos[1])
+                extents[2] = max(extents[2], pos[0])
+                extents[3] = max(extents[3], pos[1])
 
-    def generate_region_map(self, used_tiles):
-        pass
+        return (used_tiles, extents)
+
 
 
 class MapTile:
@@ -111,6 +139,12 @@ class MapTile:
             return False
         else:
             return True
+
+    def __repr__(self):
+        return self.map_name
+
+    def __str__(self):
+        return self.map_name
 
 
 # class CombinedMap:

@@ -18,12 +18,14 @@ def convert_pdf(path):
 
 def test():
     blue_mts = BlueMountains()
+
     gps_route = Route(gpx_path=1)
-    print(blue_mts.route_within_tiles(route=gps_route))
+    blue_mts.generate_region_map(route=gps_route)
+
     # plt.imshow(map.combine_images())
     # plt.show()
 
 
 if __name__ == "__main__":
-    convert_pdf(path='maps/blue_mts/hartley.pdf')
-    # test()
+    # convert_pdf(path='maps/blue_mts/springwood.pdf')
+    test()
