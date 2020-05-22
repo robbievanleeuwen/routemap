@@ -1,0 +1,29 @@
+{
+	"name": "katoomba",
+	"top_left": {
+		"x_px": 616,
+		"y_px": 185,
+		"latitude": -33.625,
+		"longitude": 150.25
+	},
+	"top_right": {
+		"x_px": 11576,
+		"y_px": 185,
+		"latitude": -33.625,
+		"longitude": 150.5
+	},
+	"bottom_right": {
+		"x_px": 11568,
+		"y_px": 6734,
+		"latitude": -33.75,
+		"longitude": 150.5
+	},
+	"bottom_left": {
+		"x_px": 624,
+		"y_px": 6734,
+		"latitude": -33.75,
+		"longitude": 150.25
+	},
+	"tile_position": [0, 0],
+	"alignment": [0, 0]
+}

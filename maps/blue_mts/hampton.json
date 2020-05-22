@@ -1,0 +1,29 @@
+{
+	"name": "hampton",
+	"top_left": {
+		"x_px": 0,
+		"y_px": 0,
+		"latitude": -33.625,
+		"longitude": 150.0
+	},
+	"top_right": {
+		"x_px": 0,
+		"y_px": 0,
+		"latitude": -33.625,
+		"longitude": 150.25
+	},
+	"bottom_right": {
+		"x_px": 0,
+		"y_px": 0,
+		"latitude": -33.75,
+		"longitude": 150.25
+	},
+	"bottom_left": {
+		"x_px": 0,
+		"y_px": 0,
+		"latitude": -33.75,
+		"longitude": 150.0
+	},
+	"tile_position": [-1, 0],
+	"alignment": [0, 0]
+}

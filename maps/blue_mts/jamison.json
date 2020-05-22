@@ -1,0 +1,29 @@
+{
+	"name": "jamison",
+	"top_left": {
+		"x_px": 624,
+		"y_px": 185,
+		"latitude": -33.75,
+		"longitude": 150.25
+	},
+	"top_right": {
+		"x_px": 11567,
+		"y_px": 185,
+		"latitude": -33.75,
+		"longitude": 150.5
+	},
+	"bottom_right": {
+		"x_px": 11559,
+		"y_px": 6734,
+		"latitude": -33.875,
+		"longitude": 150.5
+	},
+	"bottom_left": {
+		"x_px": 632,
+		"y_px": 6734,
+		"latitude": -33.875,
+		"longitude": 150.25
+	},
+	"tile_position": [0, -1],
+	"alignment": [0, 0]
+}
