@@ -1,4 +1,5 @@
 import json
+import time
 import numpy as np
 from itertools import compress
 from PIL import Image
@@ -10,41 +11,97 @@ class Region:
 
     def __init__(self, map_tiles=[]):
         self.map_tiles = []
+        self.tile_image_size = (None, None)
 
-    def load_map_tiles(self, map_image_paths=[], map_data_paths=[]):
+    def load_map_tile_data(self, map_image_paths=[], map_data_paths=[]):
         # check size of paths is the same
         if len(map_image_paths) != len(map_data_paths):
             raise Exception("Length of map_image_paths must match length of map_data_paths")
 
-        for (i, map_image_path) in enumerate(map_data_paths):
+        for (i, map_image_path) in enumerate(map_image_paths):
             new_map_tile = MapTile(map_image_path=map_image_path, map_data_path=map_data_paths[i])
             self.map_tiles.append(new_map_tile)
 
+    def print_tile_dimensions(self):
+        grid_shape = (3, 3)
+        top_widths = map_grid = np.empty(shape=grid_shape)
+        bot_widths = map_grid = np.empty(shape=grid_shape)
+        left_heights = map_grid = np.empty(shape=grid_shape)
+        right_heights = map_grid = np.empty(shape=grid_shape)
+        delta_x_left = map_grid = np.empty(shape=grid_shape)
+        delta_x_right = map_grid = np.empty(shape=grid_shape)
+        delta_y_top = map_grid = np.empty(shape=grid_shape)
+        delta_y_bot = map_grid = np.empty(shape=grid_shape)
+
+        map_grid = np.empty(shape=grid_shape, dtype=object)
+
+        for map_tile in self.map_tiles:
+            row = 1 - map_tile.tile_position[1]
+            col = map_tile.tile_position[0] + 1
+            map_grid[row, col] = map_tile
+            top_widths[row, col] = map_tile.x_px[1] - map_tile.x_px[0]
+            bot_widths[row, col] = map_tile.x_px[2] - map_tile.x_px[3]
+            left_heights[row, col] = map_tile.y_px[3] - map_tile.y_px[0]
+            right_heights[row, col] = map_tile.y_px[2] - map_tile.y_px[1]
+            delta_x_left[row, col] = map_tile.x_px[3] - map_tile.x_px[0]
+            delta_x_right[row, col] = map_tile.x_px[2] - map_tile.x_px[1]
+            delta_y_top[row, col] = map_tile.y_px[1] - map_tile.y_px[0]
+            delta_y_bot[row, col] = map_tile.y_px[2] - map_tile.y_px[3]
+
+        print("Map Tiles:\n" + str(map_grid) + "\n")
+        print("Top Widths:\n" + str(top_widths) + "\n")
+        print("Bottom Widths:\n" + str(bot_widths) + "\n")
+        print("Left Heights:\n" + str(left_heights) + "\n")
+        print("Right Heights:\n" + str(right_heights) + "\n")
+        print("Left dx:\n" + str(delta_x_left) + "\n")
+        print("Right dx:\n" + str(delta_x_right) + "\n")
+        print("Top dy:\n" + str(delta_y_top) + "\n")
+        print("Bottom dy:\n" + str(delta_y_bot) + "\n")
 
     def generate_region_map(self, route):
         (used_tiles, extents) = self.route_within_tiles(route=route)
         map_list = list(compress(self.map_tiles, used_tiles))
-        map_grid = np.empty(shape=(extents[3] - extents[1] + 1, extents[2] - extents[0] + 1), dtype=object)
+        map_grid = np.empty(
+            shape=(extents[3] - extents[1] + 1, extents[2] - extents[0] + 1), dtype=object)
 
         # populate map_grid
         for map_tile in map_list:
-            # calculate array index
-            idx = np.array([map_tile.tile_position[0] - extents[0], extents[3] - map_tile.tile_position[1]])
-            print(idx)
-            map_grid[idx] = map_tile
-            print(map_grid)
+            row = extents[3] - map_tile.tile_position[1]
+            col = map_tile.tile_position[0] - extents[0]
+            map_grid[row, col] = map_tile
 
+        # print map grid
         print(map_grid)
 
+        # calculate width & height
+        grid_width = int(map_grid.shape[1] * self.tile_image_size[0])
+        grid_height = int(map_grid.shape[0] * self.tile_image_size[1])
+
+        # build image
+        grid = Image.new('RGB', (grid_width, grid_height), (255, 255, 255))
+        top = 0
+
+        for grid_row in map_grid:
+            left = 0
+
+            for map_tile in grid_row:
+                str = "Transforming map tile: {0}".format(map_tile)
+                im = function_timer(str, map_tile.transform_image, self.tile_image_size)
+                grid.paste(im, box=(left, top))
+                left += self.tile_image_size[0]
+
+            top += self.tile_image_size[1]
+
+        return grid
 
     def route_within_tiles(self, route):
-        """Checks to see which tiles are required to display the route and returns the tile extents of the combined
-        map.
+        """Checks to see which tiles are required to display the route and returns the tile extents
+        of the combined map.
         """
 
         route_bounding_box = route.bounding_box
         used_tiles = []
-        extents = [999, 999, -999, -999] # tile extents [xmin, ymin, xmax, ymax]
+        extents = [999, 999, -999, -999]  # tile extents [xmin, ymin, xmax, ymax]
 
         for map_tile in self.map_tiles:
             is_used = map_tile.within_bounding_box(bounding_box=route_bounding_box)
@@ -60,7 +117,6 @@ class Region:
         return (used_tiles, extents)
 
 
-
 class MapTile:
     """Class for a map tile.
 
@@ -71,7 +127,6 @@ class MapTile:
     def __init__(self, map_image_path, map_data_path):
         Image.MAX_IMAGE_PIXELS = None
 
-        self.map_image = None
         self.map_image_path = map_image_path
 
         with open(map_data_path) as json_file:
@@ -107,19 +162,42 @@ class MapTile:
 
     def load_image(self):
         try:
-            self.map_image = Image.open(self.map_image_path)
+            return Image.open(self.map_image_path)
         except FileNotFoundError:
-            self.map_image = None
+            return None
 
-    def extent_crop(self):
-        left = min(self.x_px[0], self.x_px[3])
-        upper = min(self.y_px[0], self.y_px[1])
-        right = max(self.x_px[1], self.x_px[2])
-        lower = max(self.y_px[2], self.y_px[3])
+    def transform_image(self, tile_image_size):
+        def find_coeffs(source_coords, target_coords):
+            matrix = []
 
-        self.load_image()
+            for s, t in zip(source_coords, target_coords):
+                matrix.append([t[0], t[1], 1, 0, 0, 0, -s[0]*t[0], -s[0]*t[1]])
+                matrix.append([0, 0, 0, t[0], t[1], 1, -s[1]*t[0], -s[1]*t[1]])
 
-        return self.map_image.crop(box=(left, upper, right, lower))
+            A = np.matrix(matrix, dtype=np.float)
+            B = np.array(source_coords).reshape(8)
+            res = np.dot(np.linalg.inv(A.T * A) * A.T, B)
+            return np.array(res).reshape(8)
+
+        im = self.load_image()
+
+        source_coords = (
+            (self.x_px[0], self.y_px[0]),
+            (self.x_px[1], self.y_px[1]),
+            (self.x_px[2], self.y_px[2]),
+            (self.x_px[3], self.y_px[3])
+        )
+        target_coords = (
+            (0, 0),
+            (tile_image_size[0], 0),
+            (tile_image_size[0], tile_image_size[1]),
+            (0, tile_image_size[1])
+        )
+        coeffs = find_coeffs(source_coords, target_coords)
+
+        return(im.transform(
+            (tile_image_size[0], tile_image_size[1]), Image.PERSPECTIVE, coeffs, Image.BICUBIC)
+        )
 
     def within_bounding_box(self, bounding_box):
         """Check to see whether any part of the map tile lies within the bounding box in gps
@@ -147,60 +225,6 @@ class MapTile:
         return self.map_name
 
 
-# class CombinedMap:
-#
-#
-#     def combine_images(self, crop=True):
-#         image_list = []
-#
-#         for map_image in self.map_images:
-#             if crop:
-#                 image_list.append(map_image.extent_crop())
-#             else:
-#                 image_list.append(map_image.image)
-#
-#         # determine width & height
-#         x_mins = []
-#         x_maxs = []
-#         height = 0
-#
-#         for (i, im) in enumerate(image_list):
-#             x_mins.append(-0.5 * im.width + self.map_images[i].alignment[0])
-#             x_maxs.append(0.5 * im.width + self.map_images[i].alignment[0])
-#             print(im.width)
-#             height += im.height
-#
-#         print(x_mins)
-#         print(x_maxs)
-#
-#         width = max(x_maxs) - min(x_mins)
-#
-#         # check ints
-#         if width % 2 != 0:
-#             raise Exception('Width is an odd number!')
-#         elif height % 2 != 0:
-#             raise Exception('Height is an odd number!')
-#
-#         width = int(width)
-#         height = int(height)
-#
-#         combined = Image.new('RGB', (width, height), (0, 0, 0))
-#         cum_height = 0
-#
-#         for (i, im) in enumerate(image_list):
-#             left = 0.5 * (width - im.width) + self.map_images[i].alignment[0]
-#
-#             if left % 2 != 0:
-#                 raise Exception('Left is an odd number!')
-#
-#             left = int(left)
-#             print(left)
-#
-#             combined.paste(im, box=(left, cum_height))
-#             cum_height += im.height
-#
-#         return combined
-
 class Route:
     def __init__(self, gpx_path):
         self.gpx_path = gpx_path
@@ -213,4 +237,29 @@ class Route:
         pass
 
     def calculate_bounding_box(self):
-        return [150.3, -33.55, 150.4, -33.7]
+        return [149, -33.5, 151, -35]
+
+
+def function_timer(text, function, *args):
+    """Displays the message *text* and returns the time taken for a function, with arguments
+    *args*, to execute. The value returned by the timed function is also returned.
+
+    :param string text: Message to display
+    :param function: Function to time and execute
+    :type function: function
+    :param args: Function arguments
+    :return: Value returned from the function
+    """
+
+    start_time = time.time()
+
+    if text != "":
+        print(text)
+
+    result = function(*args)
+
+    if text != "":
+        print("----completed in {0:.6f} seconds---".format(
+            time.time() - start_time))
+
+    return result

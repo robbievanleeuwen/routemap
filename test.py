@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 from PIL import Image
 from pdf2image import convert_from_path
 from regions import BlueMountains
@@ -18,12 +17,12 @@ def convert_pdf(path):
 
 def test():
     blue_mts = BlueMountains()
+    # blue_mts.print_tile_dimensions()
 
     gps_route = Route(gpx_path=1)
-    blue_mts.generate_region_map(route=gps_route)
+    im = blue_mts.generate_region_map(route=gps_route)
 
-    # plt.imshow(map.combine_images())
-    # plt.show()
+    im.save('img.jpg')
 
 
 if __name__ == "__main__":
