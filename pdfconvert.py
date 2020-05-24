@@ -10,7 +10,11 @@ def convert_pdf(path):
 
     for file in files:
         if file[-3:] == 'pdf':
-            convert_from_path(path + file, dpi=300, fmt='jpeg')
+            print("Converting {0}...".format(file))
+            convert_from_path(
+                path + file, dpi=300, fmt='jpeg', output_file=file[:-4], output_folder=path,
+                single_file=True
+            )
 
 
 if __name__ == "__main__":

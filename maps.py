@@ -15,6 +15,8 @@ class Region:
     def __init__(self, map_tiles=[]):
         self.map_tiles = []
         self.tile_image_size = (None, None)
+        self.region_size = (None, None)
+        self.top_left_tile = (None, None)
 
     def load_map_tile_data(self, map_image_paths=[], map_data_paths=[]):
         # check size of paths is the same
@@ -25,7 +27,7 @@ class Region:
             new_map_tile = MapTile(map_image_path=map_image_path, map_data_path=map_data_paths[i])
             self.map_tiles.append(new_map_tile)
 
-    def generate_route_map(self, route, filename, crop=[1, 1, 1, 1]):
+    def generate_route_map(self, route, filename, output_folder='', crop=[1, 1, 1, 1]):
         """crop is in gps minutes (left, top, right, bottom)"""
 
         # generate map based on route
@@ -57,12 +59,22 @@ class Region:
         ax.plot(x_s, y_s, 'b-', linewidth=3, alpha=0.5)
 
         ax.set(xlim=[-0.5, width - 0.5], ylim=[height - 0.5, -0.5], aspect=1)
-        fig.savefig(filename + '.jpg', dpi=dpi, transparent=True)
+        fig.savefig(output_folder + filename + '.jpg', dpi=dpi, transparent=True)
 
-    def generate_region_map(self, route, crop):
+    def generate_region_map(self, route, crop, entire_extent=False):
         """crop is in gps minutes (left, top, right, bottom)"""
 
-        (used_tiles, extents) = self.route_within_tiles(route, crop)
+        if entire_extent:
+            used_tiles = [True] * self.region_size[0] * self.region_size[1]
+            extents = [
+                    self.top_left_tile[0],
+                    self.top_left_tile[1] - self.region_size[1] + 1,
+                    self.top_left_tile[0] + self.region_size[0] - 1,
+                    self.top_left_tile[1]
+                ]
+        else:
+            (used_tiles, extents) = self.route_within_tiles(route, crop)
+
         map_list = list(compress(self.map_tiles, used_tiles))
         map_grid = np.empty(
             shape=(extents[3] - extents[1] + 1, extents[2] - extents[0] + 1), dtype=object)
@@ -103,25 +115,28 @@ class Region:
         gps_extents[2] = map_tile.longitude[2]
         gps_extents[3] = map_tile.latitude[2]
 
-        # crop image
-        gps_bbox = route.calculate_bounding_box()
-        gps_crop = (
-            gps_bbox[0] - crop[0] / 60,
-            gps_bbox[1] + crop[1] / 60,
-            gps_bbox[2] + crop[2] / 60,
-            gps_bbox[3] - crop[3] / 60
-        )
+        if entire_extent:
+            return (grid, gps_extents)
+        else:
+            # crop image
+            gps_bbox = route.calculate_bounding_box()
+            gps_crop = (
+                gps_bbox[0] - crop[0] / 60,
+                gps_bbox[1] + crop[1] / 60,
+                gps_bbox[2] + crop[2] / 60,
+                gps_bbox[3] - crop[3] / 60
+            )
 
-        (l, t) = self.gps_to_image(
-            (gps_crop[0], gps_crop[1]),
-            gps_extents, grid_width, grid_height
-        )
-        (r, b) = self.gps_to_image(
-            (gps_crop[2], gps_crop[3]),
-            gps_extents, grid_width, grid_height
-        )
+            (l, t) = self.gps_to_image(
+                (gps_crop[0], gps_crop[1]),
+                gps_extents, grid_width, grid_height
+            )
+            (r, b) = self.gps_to_image(
+                (gps_crop[2], gps_crop[3]),
+                gps_extents, grid_width, grid_height
+            )
 
-        return (grid.crop((l, t, r, b)), gps_crop)
+            return (grid.crop((l, t, r, b)), gps_crop)
 
     def route_within_tiles(self, route, crop):
         """Checks to see which tiles are required to display the route and returns the tile extents
@@ -160,7 +175,7 @@ class Region:
         return (x, y)
 
     def print_tile_dimensions(self):
-        grid_shape = (3, 3)
+        grid_shape = self.region_size
         top_widths = map_grid = np.empty(shape=grid_shape)
         bot_widths = map_grid = np.empty(shape=grid_shape)
         left_heights = map_grid = np.empty(shape=grid_shape)
@@ -173,8 +188,8 @@ class Region:
         map_grid = np.empty(shape=grid_shape, dtype=object)
 
         for map_tile in self.map_tiles:
-            row = 1 - map_tile.tile_position[1]
-            col = map_tile.tile_position[0] + 1
+            row = self.top_left_tile[1] - map_tile.tile_position[1]
+            col = map_tile.tile_position[0] - self.top_left_tile[0]
             map_grid[row, col] = map_tile
             top_widths[row, col] = map_tile.x_px[1] - map_tile.x_px[0]
             bot_widths[row, col] = map_tile.x_px[2] - map_tile.x_px[3]

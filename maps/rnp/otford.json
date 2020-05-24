@@ -1,0 +1,28 @@
+{
+	"name": "otford",
+	"top_left": {
+		"x_px": 650,
+		"y_px": 186,
+		"latitude": -34.125,
+		"longitude": 151.0
+	},
+	"top_right": {
+		"x_px": 11541,
+		"y_px": 186,
+		"latitude": -34.125,
+		"longitude": 151.25
+	},
+	"bottom_right": {
+		"x_px": 11533,
+		"y_px": 6733,
+		"latitude": -34.25,
+		"longitude": 151.25
+	},
+	"bottom_left": {
+		"x_px": 658,
+		"y_px": 6733,
+		"latitude": -34.25,
+		"longitude": 151.0
+	},
+	"tile_position": [1, -1]
+}
