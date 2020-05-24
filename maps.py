@@ -68,8 +68,8 @@ class Region:
             used_tiles = [True] * self.region_size[0] * self.region_size[1]
             extents = [
                     self.top_left_tile[0],
-                    self.top_left_tile[1] - self.region_size[1] + 1,
-                    self.top_left_tile[0] + self.region_size[0] - 1,
+                    self.top_left_tile[1] - self.region_size[0] + 1,
+                    self.top_left_tile[0] + self.region_size[1] - 1,
                     self.top_left_tile[1]
                 ]
         else:

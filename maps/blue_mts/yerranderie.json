@@ -1,0 +1,28 @@
+{
+	"name": "yerranderie",
+	"top_left": {
+		"x_px": 639,
+		"y_px": 185,
+		"latitude": -34.0,
+		"longitude": 150.0
+	},
+	"top_right": {
+		"x_px": 11553,
+		"y_px": 185,
+		"latitude": -34.0,
+		"longitude": 150.25
+	},
+	"bottom_right": {
+		"x_px": 11545,
+		"y_px": 6734,
+		"latitude": -34.125,
+		"longitude": 150.25
+	},
+	"bottom_left": {
+		"x_px": 647,
+		"y_px": 6734,
+		"latitude": -34.125,
+		"longitude": 150.0
+	},
+	"tile_position": [-1, -3]
+}

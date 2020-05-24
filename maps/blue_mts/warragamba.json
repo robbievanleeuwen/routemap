@@ -1,0 +1,28 @@
+{
+	"name": "warragamba",
+	"top_left": {
+		"x_px": 633,
+		"y_px": 185,
+		"latitude": -33.875,
+		"longitude": 150.5
+	},
+	"top_right": {
+		"x_px": 11560,
+		"y_px": 185,
+		"latitude": -33.875,
+		"longitude": 150.75
+	},
+	"bottom_right": {
+		"x_px": 11552,
+		"y_px": 6734,
+		"latitude": -34.0,
+		"longitude": 150.75
+	},
+	"bottom_left": {
+		"x_px": 641,
+		"y_px": 6734,
+		"latitude": -34.0,
+		"longitude": 150.5
+	},
+	"tile_position": [1, -2]
+}

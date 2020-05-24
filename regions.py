@@ -8,16 +8,19 @@ class BlueMountains(Region):
         super().__init__()
 
         self.tile_image_size = (10952, 6549)
-        self.region_size = (3, 3)
-        self.top_left_tile = (-1, 1)
+        self.region_size = (6, 3)
+        self.top_left_tile = (-1, 2)
 
         map_image_paths = []
         map_data_paths = []
         dir = 'maps/blue_mts/'
         map_list = [
+            'lithgow', 'wollangambe', 'mountain_lagoon',
             'hartley', 'mt_wilson', 'kurrajong',
             'hampton', 'katoomba', 'springwood',
-            'jenolan', 'jamison', 'penrith'
+            'jenolan', 'jamison', 'penrith',
+            'kanangra', 'bimlow', 'warragamba',
+            'yerranderie', 'burragorang', 'camden'
         ]
 
         for map in map_list:

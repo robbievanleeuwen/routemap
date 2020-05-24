@@ -1,0 +1,28 @@
+{
+	"name": "camden",
+	"top_left": {
+		"x_px": 640,
+		"y_px": 185,
+		"latitude": -34.0,
+		"longitude": 150.5
+	},
+	"top_right": {
+		"x_px": 11552,
+		"y_px": 185,
+		"latitude": -34.0,
+		"longitude": 150.75
+	},
+	"bottom_right": {
+		"x_px": 11544,
+		"y_px": 6734,
+		"latitude": -34.125,
+		"longitude": 150.75
+	},
+	"bottom_left": {
+		"x_px": 648,
+		"y_px": 6734,
+		"latitude": -34.125,
+		"longitude": 150.5
+	},
+	"tile_position": [1, -3]
+}
