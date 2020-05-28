@@ -1,0 +1,2 @@
+- [ ] Satellite imagery
+- [ ] PDF output
