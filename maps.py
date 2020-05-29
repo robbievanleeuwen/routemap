@@ -67,11 +67,11 @@ class Region:
         if entire_extent:
             used_tiles = [True] * self.region_size[0] * self.region_size[1]
             extents = [
-                    self.top_left_tile[0],
-                    self.top_left_tile[1] - self.region_size[0] + 1,
-                    self.top_left_tile[0] + self.region_size[1] - 1,
-                    self.top_left_tile[1]
-                ]
+                self.top_left_tile[0],
+                self.top_left_tile[1] - self.region_size[0] + 1,
+                self.top_left_tile[0] + self.region_size[1] - 1,
+                self.top_left_tile[1]
+            ]
         else:
             (used_tiles, extents) = self.route_within_tiles(route, crop)
 
@@ -327,10 +327,10 @@ class Route:
             self.srtm_elevation()
 
     def calculate_length_2d(self):
-        self.gpx.length_2d()
+        return(self.gpx.length_2d())
 
     def calculate_length_3d(self):
-        self.gpx.length_3d()
+        return(self.gpx.length_3d())
 
     def elevation_chart_points(self):
         distance_points = []

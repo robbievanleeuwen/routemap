@@ -29,6 +29,7 @@ class BlueMountains(Region):
 
         self.load_map_tile_data(map_image_paths=map_image_paths, map_data_paths=map_data_paths)
 
+
 class RoyalNationalPark(Region):
     def __init__(self):
         super().__init__()
