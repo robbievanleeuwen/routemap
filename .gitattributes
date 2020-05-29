@@ -1,2 +1,11 @@
 maps/master_maps/** filter=lfs diff=lfs merge=lfs -text
 routes/out/** filter=lfs diff=lfs merge=lfs -text
+routes/out/kanangra_to_cloudmaker.jpg filter=lfs diff=lfs merge=lfs -text
+routes/out/kings_tableland.jpg filter=lfs diff=lfs merge=lfs -text
+routes/out/six_foot_track_loop.jpg filter=lfs diff=lfs merge=lfs -text
+routes/out/splendour_rock.jpg filter=lfs diff=lfs merge=lfs -text
+routes/out/bell_to_wollangambe_crater.jpg filter=lfs diff=lfs merge=lfs -text
+routes/out/bulga_denis_canyon.jpg filter=lfs diff=lfs merge=lfs -text
+routes/out/coastal_track.jpg filter=lfs diff=lfs merge=lfs -text
+routes/out/kedumba.jpg filter=lfs diff=lfs merge=lfs -text
+routes/out/upper_grose.jpg filter=lfs diff=lfs merge=lfs -text
