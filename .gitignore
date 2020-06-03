@@ -13,7 +13,10 @@
 
 # Pycharm IDE file folder
 /.idea/
+
+# output files
 /maps/master_maps
+/routes/out
 
 # mac
 .DS_Store
