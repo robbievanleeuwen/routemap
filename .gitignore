@@ -17,6 +17,7 @@
 # output files
 /maps/master_maps
 /routes/out
+/temp/
 
 # mac
 .DS_Store

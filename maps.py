@@ -1,3 +1,4 @@
+import io
 import json
 import time
 import numpy as np
@@ -27,8 +28,8 @@ class Region:
             new_map_tile = MapTile(map_image_path=map_image_path, map_data_path=map_data_paths[i])
             self.map_tiles.append(new_map_tile)
 
-    def generate_route_map(self, route, filename, output_folder='', crop=[1, 1, 1, 1]):
-        """crop is in gps minutes (left, top, right, bottom)"""
+    def generate_route_map(self, route, filename=None, output_folder='', crop=[1, 1, 1, 1]):
+        """Crop is in gps minutes (left, top, right, bottom)."""
 
         # generate map based on route
         (region_map, gps_extents) = self.generate_region_map(route, crop)
@@ -59,7 +60,15 @@ class Region:
         ax.plot(x_s, y_s, 'b-', linewidth=3, alpha=0.5)
 
         ax.set(xlim=[-0.5, width - 0.5], ylim=[height - 0.5, -0.5], aspect=1)
-        fig.savefig(output_folder + filename + '.jpg', dpi=dpi, transparent=True)
+
+        if filename:
+            fig.savefig(output_folder + filename + '.jpg', dpi=dpi, transparent=True)
+
+        # save figure to memory and return
+        buffer = io.BytesIO()
+        fig.savefig(buffer, format='jpg', dpi=dpi, transparent=True)
+        buffer.seek(0)
+        return Image.open(buffer)
 
     def generate_region_map(self, route, crop, entire_extent=False):
         """crop is in gps minutes (left, top, right, bottom)"""
@@ -77,7 +86,8 @@ class Region:
 
         map_list = list(compress(self.map_tiles, used_tiles))
         map_grid = np.empty(
-            shape=(extents[3] - extents[1] + 1, extents[2] - extents[0] + 1), dtype=object)
+            shape=(extents[3] - extents[1] + 1, extents[2] - extents[0] + 1), dtype=object
+        )
 
         # populate map_grid
         for map_tile in map_list:
